@@ -1,0 +1,915 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sopa de Letras: Materiales No Ferrosos - Instructor Elvin Romero</title>
+    <style>
+        :root {
+            --primary: #4f46e5;
+            --primary-hover: #4338ca;
+            --success: #10b981;
+            --bg-gradient: linear-gradient(135deg, #f8fafc 0%, #e2e8f0 100%);
+            --card-bg: #ffffff;
+            --text-main: #1e293b;
+            --text-muted: #64748b;
+            --border-color: #cbd5e1;
+            --shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.05), 0 8px 10px -6px rgba(0, 0, 0, 0.05);
+            --radius: 16px;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+            -webkit-user-select: none;
+            user-select: none;
+        }
+
+        body {
+            background: var(--bg-gradient);
+            color: var(--text-main);
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 20px;
+        }
+
+        .container {
+            width: 100%;
+            max-width: 1100px;
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+        }
+
+        header {
+            text-align: center;
+            background: var(--card-bg);
+            padding: 24px;
+            border-radius: var(--radius);
+            box-shadow: var(--shadow);
+            border: 1px solid rgba(255, 255, 255, 0.8);
+        }
+
+        header h1 {
+            font-size: clamp(1.4rem, 2.8vw, 2rem);
+            color: var(--primary);
+            margin-bottom: 6px;
+        }
+
+        header p {
+            color: var(--text-muted);
+            font-size: clamp(0.9rem, 2vw, 1rem);
+            font-weight: 600;
+        }
+
+        /* Pantalla de Registro / Bienvenida */
+        .modal-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(15, 23, 42, 0.7);
+            backdrop-filter: blur(4px);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 1000;
+            opacity: 1;
+            transition: opacity 0.3s ease;
+        }
+
+        .modal-overlay.hidden {
+            opacity: 0;
+            pointer-events: none;
+        }
+
+        .modal-content {
+            background: var(--card-bg);
+            padding: 35px;
+            border-radius: var(--radius);
+            box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.2);
+            text-align: center;
+            max-width: 480px;
+            width: 90%;
+        }
+
+        .modal-content h2 {
+            font-size: 1.6rem;
+            color: var(--primary);
+            margin-bottom: 12px;
+        }
+
+        .modal-content p {
+            color: var(--text-muted);
+            margin-bottom: 20px;
+            line-height: 1.5;
+            font-size: 0.95rem;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+            text-align: left;
+        }
+
+        .form-group label {
+            display: block;
+            font-size: 0.9rem;
+            font-weight: 600;
+            margin-bottom: 6px;
+            color: var(--text-main);
+        }
+
+        .form-input {
+            width: 100%;
+            padding: 12px 16px;
+            border: 2px solid var(--border-color);
+            border-radius: 8px;
+            font-size: 1rem;
+            outline: none;
+            transition: border-color 0.2s;
+        }
+
+        .form-input:focus {
+            border-color: var(--primary);
+        }
+
+        /* Tarjeta de Instrucciones y Dinámica */
+        .instructions-card {
+            background: #e0e7ff;
+            border-left: 5px solid var(--primary);
+            padding: 16px 20px;
+            border-radius: 0 var(--radius) var(--radius) 0;
+            font-size: 0.95rem;
+            color: #312e81;
+            line-height: 1.6;
+            box-shadow: var(--shadow);
+        }
+
+        .instructions-card h3 {
+            margin-bottom: 8px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .instructions-card ul {
+            margin-left: 20px;
+            margin-top: 6px;
+        }
+
+        .stats-bar {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 15px;
+        }
+
+        .stat-box {
+            background: var(--card-bg);
+            padding: 15px 20px;
+            border-radius: var(--radius);
+            box-shadow: var(--shadow);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            border: 1px solid rgba(255, 255, 255, 0.8);
+        }
+
+        .stat-label {
+            font-size: 0.85rem;
+            color: var(--text-muted);
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            margin-bottom: 4px;
+        }
+
+        .stat-value {
+            font-size: 1.3rem;
+            font-weight: 700;
+            color: var(--text-main);
+        }
+
+        .progress-container {
+            width: 100%;
+            background: #e2e8f0;
+            height: 10px;
+            border-radius: 5px;
+            overflow: hidden;
+            margin-top: 8px;
+        }
+
+        .progress-bar {
+            height: 100%;
+            background: var(--success);
+            width: 0%;
+            transition: width 0.4s ease;
+            border-radius: 5px;
+        }
+
+        .game-layout {
+            display: grid;
+            grid-template-columns: 1fr 320px;
+            gap: 20px;
+        }
+
+        @media (max-width: 900px) {
+            .game-layout {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        .grid-card {
+            background: var(--card-bg);
+            padding: 24px;
+            border-radius: var(--radius);
+            box-shadow: var(--shadow);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            overflow: auto;
+            border: 1px solid rgba(255, 255, 255, 0.8);
+            position: relative;
+        }
+
+        #wordgrid {
+            display: grid;
+            gap: 4px;
+            touch-action: none;
+        }
+
+        .grid-cell {
+            width: clamp(32px, 4vw, 42px);
+            height: clamp(32px, 4vw, 42px);
+            background: #f1f5f9;
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 700;
+            font-size: clamp(0.9rem, 1.5vw, 1.2rem);
+            color: var(--text-main);
+            cursor: pointer;
+            transition: background 0.2s, transform 0.1s, border-color 0.2s;
+        }
+
+        .grid-cell:hover {
+            background: #e2e8f0;
+            border-color: var(--primary);
+        }
+
+        .grid-cell.selected {
+            background: #c7d2fe !important;
+            color: var(--primary);
+            border-color: var(--primary);
+            transform: scale(0.95);
+        }
+
+        .grid-cell.found {
+            background: #d1fae5 !important;
+            color: #065f46;
+            border-color: var(--success);
+        }
+
+        .words-card {
+            background: var(--card-bg);
+            padding: 20px;
+            border-radius: var(--radius);
+            box-shadow: var(--shadow);
+            display: flex;
+            flex-direction: column;
+            border: 1px solid rgba(255, 255, 255, 0.8);
+        }
+
+        .words-card h3 {
+            font-size: 1.1rem;
+            color: var(--text-main);
+            margin-bottom: 15px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            border-bottom: 2px solid #f1f5f9;
+            padding-bottom: 8px;
+        }
+
+        .words-list {
+            list-style: none;
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+            max-height: 380px;
+            overflow-y: auto;
+            padding-right: 4px;
+        }
+
+        .words-list li {
+            padding: 8px 12px;
+            background: #f8fafc;
+            border-radius: 8px;
+            font-size: 0.95rem;
+            color: var(--text-muted);
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            transition: all 0.3s ease;
+            border: 1px solid transparent;
+        }
+
+        .words-list li.found {
+            background: #ecfdf5;
+            color: #065f46;
+            text-decoration: line-through;
+            border-color: #a7f3d0;
+            font-weight: 600;
+        }
+
+        .feedback-banner {
+            margin-top: 15px;
+            padding: 12px;
+            background: #f0fdf4;
+            border: 1px solid #bbf7d0;
+            border-radius: 8px;
+            text-align: center;
+            font-weight: 600;
+            color: #166534;
+            min-height: 46px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 6px;
+        }
+
+        .modal-body-text {
+            color: var(--text-muted);
+            margin-bottom: 20px;
+            line-height: 1.6;
+            font-size: 0.95rem;
+            text-align: left;
+            background: #f8fafc;
+            padding: 16px;
+            border-radius: 12px;
+            border: 1px solid var(--border-color);
+        }
+
+        .modal-body-text strong {
+            color: var(--text-main);
+        }
+
+        .btn {
+            background: var(--primary);
+            color: white;
+            border: none;
+            padding: 12px 24px;
+            border-radius: 8px;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: background 0.2s, transform 0.1s;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            width: 100%;
+        }
+
+        .btn:hover {
+            background: var(--primary-hover);
+        }
+
+        .btn:active {
+            transform: scale(0.98);
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Modal de Ingreso de Nombre -->
+    <div class="modal-overlay" id="nameModal">
+        <div class="modal-content">
+            <h2>🎯 Sopa de Letras</h2>
+            <p>Ingresa tu nombre completo para comenzar la actividad interactiva de materiales no ferrosos.</p>
+            <div class="form-group">
+                <label for="studentNameInput">Nombre Completo del Estudiante:</label>
+                <input type="text" id="studentNameInput" class="form-input" placeholder="Ej. Juan Pérez" autocomplete="off">
+            </div>
+            <button class="btn" onclick="startActivity()">🚀 Comenzar Actividad</button>
+        </div>
+    </div>
+
+    <!-- Pantalla Final de Resultados -->
+    <div class="modal-overlay hidden" id="completionModal">
+        <div class="modal-content">
+            <h2 id="modalTitle">🏆 ¡DESAFÍO COMPLETADO!</h2>
+            <div class="modal-body-text" id="modalMessage"></div>
+            <div id="modalStats" style="margin-bottom: 20px; font-weight: 600; color: var(--text-main); font-size: 0.95rem;"></div>
+            <button class="btn" onclick="restartGame()">🔄 JUGAR DE NUEVO</button>
+        </div>
+    </div>
+
+    <div class="container">
+        <!-- Encabezado -->
+        <header>
+            <h1>Sopa de Letras: Materiales No Ferrosos</h1>
+            <p>Instructor Elvin Romero</p>
+        </header>
+
+        <!-- Instrucciones y Dinámica del Juego -->
+        <div class="instructions-card">
+            <h3>📖 Dinámica y Reglas del Juego</h3>
+            <p>Esta actividad gamificada te permite reforzar el reconocimiento visual de la terminología técnica estudiada.</p>
+            <ul>
+                <li><strong>Objetivo:</strong> Localiza todas las palabras ocultas dentro de la cuadrícula en un tiempo límite de 60 minutos.</li>
+                <li><strong>Interacción:</strong> Haz clic y arrastra el mouse (o usa tu dedo en pantallas táctiles) desde la primera letra hasta la última de la palabra.</li>
+                <li><strong>Direcciones:</strong> Las palabras pueden encontrarse en cualquier dirección (horizontal, vertical o diagonal).</li>
+                <li><strong>Límite de Tiempo:</strong> El cronómetro cuenta progresivamente hasta 60 minutos. Si se alcanza el tiempo máximo sin completar la actividad, la partida se reiniciará automáticamente.</li>
+            </ul>
+        </div>
+
+        <!-- Estadísticas -->
+        <div class="stats-bar">
+            <div class="stat-box">
+                <span class="stat-label">Progreso</span>
+                <span class="stat-value" id="progressText">0 / 17</span>
+                <div class="progress-container">
+                    <div class="progress-bar" id="progressBar"></div>
+                </div>
+            </div>
+            <div class="stat-box">
+                <span class="stat-label">Puntuación</span>
+                <span class="stat-value" id="scoreText">0 pts</span>
+            </div>
+            <div class="stat-box">
+                <span class="stat-label">Cronómetro</span>
+                <span class="stat-value" id="timerText">00:00 / 60:00</span>
+            </div>
+        </div>
+
+        <!-- Área de Juego -->
+        <div class="game-layout">
+            <div class="grid-card">
+                <div id="wordgrid"></div>
+            </div>
+
+            <div class="words-card">
+                <h3>🎯 PALABRAS POR ENCONTRAR</h3>
+                <ul class="words-list" id="wordsList"></ul>
+                <div class="feedback-banner" id="feedbackBanner">
+                    🚀 ¡Busca la primera palabra en la cuadrícula!
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // // DATOS
+        const originalWords = [
+            "ALUMINIO", "TITANIO", "MAGNESIO", "COBRE", "ZINC", 
+            "ESTAÑO", "PLOMO", "NIQUEL", "CROMO", "TUNGSTENO", 
+            "ANTIMONIO", "CADMIO", "BISMUTO", "MERCURIO", "ORO", "PLATA", "PLATINO"
+        ];
+
+        // // CONFIGURACIÓN
+        const gridSize = 15;
+        const maxTimeSeconds = 3600; // 60 minutos exactos
+        let studentName = "";
+        let grid = [];
+        let placedWords = [];
+        let foundWords = new Set();
+        let score = 0;
+        let timerSeconds = 0;
+        let timerInterval = null;
+        let isGameActive = false;
+
+        let isMouseDown = false;
+        let startCell = null;
+        let currentSelectedCells = [];
+
+        const directions = [
+            { r: 0, c: 1 },   // Horizontal →
+            { r: 0, c: -1 },  // Horizontal ←
+            { r: 1, c: 0 },   // Vertical ↓
+            { r: -1, c: 0 },  // Vertical ↑
+            { r: 1, c: 1 },   // Diagonal ↘
+            { r: -1, c: -1 }, // Diagonal ↖
+            { r: 1, c: -1 },  // Diagonal ↙
+            { r: -1, c: 1 }   // Diagonal ↗
+        ];
+
+        function normalizeWord(str) {
+            return str.normalize("NFD").replace(/[\u0300-\u036f]/g, "").toUpperCase();
+        }
+
+        function startActivity() {
+            const input = document.getElementById('studentNameInput');
+            const nameVal = input.value.trim();
+            if (!nameVal) {
+                alert("Por favor, ingresa tu nombre completo para continuar.");
+                input.focus();
+                return;
+            }
+            studentName = nameVal;
+            document.getElementById('nameModal').classList.add('hidden');
+            initGame();
+        }
+
+        // // CONTROL DEL TIEMPO (Cronómetro hasta 60 min con autoejecución de reinicio)
+        function startTimer() {
+            if (timerInterval) clearInterval(timerInterval);
+            timerSeconds = 0;
+            updateTimerDisplay();
+            timerInterval = setInterval(() => {
+                if (!isGameActive) return;
+                timerSeconds++;
+                updateTimerDisplay();
+
+                if (timerSeconds >= maxTimeSeconds) {
+                    stopTimer();
+                    triggerTimeOutReset();
+                }
+            }, 1000);
+        }
+
+        function stopTimer() {
+            clearInterval(timerInterval);
+        }
+
+        function updateTimerDisplay() {
+            const mins = String(Math.floor(timerSeconds / 60)).padStart(2, '0');
+            const secs = String(timerSeconds % 60).padStart(2, '0');
+            document.getElementById('timerText').innerText = `${mins}:${secs} / 60:00`;
+        }
+
+        function triggerTimeOutReset() {
+            isGameActive = false;
+            alert("⏰ El tiempo límite de 60 minutos ha concluido. La actividad se reiniciará automáticamente.");
+            initGame();
+        }
+
+        // // GENERACIÓN DE LA CUADRÍCULA
+        function initGame() {
+            isGameActive = true;
+            foundWords.clear();
+            score = 0;
+            updateScoreAndProgress();
+            renderWordsList();
+            
+            let success = false;
+            let attempts = 0;
+            
+            while (!success && attempts < 50) {
+                attempts++;
+                success = generateGrid();
+            }
+
+            renderGridDOM();
+            startTimer();
+        }
+
+        function generateGrid() {
+            grid = Array(gridSize).fill(null).map(() => Array(gridSize).fill(''));
+            placedWords = [];
+
+            const sortedWords = [...originalWords].sort((a, b) => b.length - a.length);
+
+            for (const wordObj of sortedWords) {
+                const cleanWord = normalizeWord(wordObj);
+                let placed = false;
+                let wordAttempts = 0;
+
+                while (!placed && wordAttempts < 100) {
+                    wordAttempts++;
+                    const dir = directions[Math.floor(Math.random() * directions.length)];
+                    const startRow = Math.floor(Math.random() * gridSize);
+                    const startCol = Math.floor(Math.random() * gridSize);
+
+                    if (canPlaceWord(cleanWord, startRow, startCol, dir)) {
+                        placeWordOnGrid(cleanWord, wordObj, startRow, startCol, dir);
+                        placed = true;
+                    }
+                }
+
+                if (!placed) return false;
+            }
+
+            const alphabet = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
+            for (let r = 0; r < gridSize; r++) {
+                for (let c = 0; c < gridSize; c++) {
+                    if (grid[r][c] === '') {
+                        grid[r][c] = alphabet[Math.floor(Math.random() * alphabet.length)];
+                    }
+                }
+            }
+            return true;
+        }
+
+        function canPlaceWord(word, r, c, dir) {
+            const len = word.length;
+            const endR = r + (len - 1) * dir.r;
+            const endC = c + (len - 1) * dir.c;
+
+            if (endR < 0 || endR >= gridSize || endC < 0 || endC >= gridSize) return false;
+
+            for (let i = 0; i < len; i++) {
+                const curR = r + i * dir.r;
+                const curC = c + i * dir.c;
+                const existing = grid[curR][curC];
+                if (existing !== '' && existing !== word[i]) {
+                    return false;
+                }
+            }
+            return true;
+        }
+
+        function placeWordOnGrid(cleanWord, originalWord, r, c, dir) {
+            const coordinates = [];
+            for (let i = 0; i < cleanWord.length; i++) {
+                const curR = r + i * dir.r;
+                const curC = c + i * dir.c;
+                grid[curR][curC] = cleanWord[i];
+                coordinates.push({ r: curR, c: curC });
+            }
+            placedWords.push({
+                original: originalWord,
+                clean: cleanWord,
+                coords: coordinates
+            });
+        }
+
+        function renderGridDOM() {
+            const gridEl = document.getElementById('wordgrid');
+            gridEl.innerHTML = '';
+            gridEl.style.gridTemplateColumns = `repeat(${gridSize}, 1fr)`;
+
+            for (let r = 0; r < gridSize; r++) {
+                for (let c = 0; c < gridSize; c++) {
+                    const cell = document.createElement('div');
+                    cell.className = 'grid-cell';
+                    cell.dataset.row = r;
+                    cell.dataset.col = c;
+                    cell.innerText = grid[r][c];
+                    gridEl.appendChild(cell);
+                }
+            }
+
+            setupInteractionListeners();
+        }
+
+        function renderWordsList() {
+            const listEl = document.getElementById('wordsList');
+            listEl.innerHTML = '';
+            originalWords.forEach(word => {
+                const li = document.createElement('li');
+                li.id = `word-item-${normalizeWord(word)}`;
+                li.innerHTML = `☐ ${word}`;
+                listEl.appendChild(li);
+            });
+        }
+
+        function setupInteractionListeners() {
+            const gridEl = document.getElementById('wordgrid');
+
+            gridEl.addEventListener('mousedown', (e) => {
+                const cell = e.target.closest('.grid-cell');
+                if (!cell) return;
+                startSelection(parseInt(cell.dataset.row), parseInt(cell.dataset.col));
+                e.preventDefault();
+            });
+
+            gridEl.addEventListener('mouseover', (e) => {
+                if (!isMouseDown) return;
+                const cell = e.target.closest('.grid-cell');
+                if (!cell) return;
+                updateSelection(parseInt(cell.dataset.row), parseInt(cell.dataset.col));
+            });
+
+            window.addEventListener('mouseup', () => {
+                if (isMouseDown) endSelection();
+            });
+
+            gridEl.addEventListener('touchstart', (e) => {
+                const touch = e.touches[0];
+                const target = document.elementFromPoint(touch.clientX, touch.clientY);
+                const cell = target ? target.closest('.grid-cell') : null;
+                if (!cell) return;
+                startSelection(parseInt(cell.dataset.row), parseInt(cell.dataset.col));
+                e.preventDefault();
+            }, { passive: false });
+
+            gridEl.addEventListener('touchmove', (e) => {
+                if (!isMouseDown) return;
+                const touch = e.touches[0];
+                const target = document.elementFromPoint(touch.clientX, touch.clientY);
+                const cell = target ? target.closest('.grid-cell') : null;
+                if (!cell) return;
+                updateSelection(parseInt(cell.dataset.row), parseInt(cell.dataset.col));
+                e.preventDefault();
+            }, { passive: false });
+
+            window.addEventListener('touchend', () => {
+                if (isMouseDown) endSelection();
+            });
+        }
+
+        function startSelection(r, c) {
+            if (!isGameActive) return;
+            isMouseDown = true;
+            startCell = { r, c };
+            clearCurrentSelectionVisuals();
+            currentSelectedCells = [{ r, c }];
+            highlightCells(currentSelectedCells);
+        }
+
+        function updateSelection(r, c) {
+            if (!startCell) return;
+            currentSelectedCells = getLineCells(startCell.r, startCell.c, r, c);
+            clearCurrentSelectionVisuals();
+            highlightCells(currentSelectedCells);
+        }
+
+        function getLineCells(r1, c1, r2, c2) {
+            const cells = [];
+            const dr = r2 - r1;
+            const dc = c2 - c1;
+            const steps = Math.max(Math.abs(dr), Math.abs(dc));
+
+            if (steps === 0) return [{ r: r1, c: c1 }];
+
+            const sR = dr === 0 ? 0 : dr / Math.abs(dr);
+            const sC = dc === 0 ? 0 : dc / Math.abs(dc);
+
+            if (Math.abs(dr) !== Math.abs(dc) && dr !== 0 && dc !== 0) {
+                return [{ r: r1, c: c1 }];
+            }
+
+            for (let i = 0; i <= steps; i++) {
+                cells.push({
+                    r: r1 + i * sR,
+                    c: c1 + i * sC
+                });
+            }
+            return cells;
+        }
+
+        function highlightCells(cells) {
+            cells.forEach(coord => {
+                const cellEl = document.querySelector(`[data-row='${coord.r}'][data-col='${coord.c}']`);
+                if (cellEl && !cellEl.classList.contains('found')) {
+                    cellEl.classList.add('selected');
+                }
+            });
+        }
+
+        function clearCurrentSelectionVisuals() {
+            document.querySelectorAll('.grid-cell.selected').forEach(cell => {
+                cell.classList.remove('selected');
+            });
+        }
+
+        function endSelection() {
+            if (!isMouseDown) return;
+            isMouseDown = false;
+
+            let selectedWordStr = currentSelectedCells.map(coord => grid[coord.r][coord.c]).join('');
+            let reversedWordStr = [...selectedWordStr].reverse().join('');
+
+            let matchedObj = placedWords.find(w => (w.clean === selectedWordStr || w.clean === reversedWordStr) && !foundWords.has(w.clean));
+
+            if (matchedObj) {
+                foundWords.add(matchedObj.clean);
+                score += 100;
+                markWordAsFound(matchedObj);
+                updateScoreAndProgress();
+                triggerPositiveFeedback();
+
+                if (foundWords.size === originalWords.length) {
+                    endGame();
+                }
+            } else {
+                clearCurrentSelectionVisuals();
+                if (currentSelectedCells.length > 1) {
+                    triggerIncorrectFeedback();
+                }
+            }
+            startCell = null;
+            currentSelectedCells = [];
+        }
+
+        function markWordAsFound(wordObj) {
+            wordObj.coords.forEach(coord => {
+                const cellEl = document.querySelector(`[data-row='${coord.r}'][data-col='${coord.c}']`);
+                if (cellEl) {
+                    cellEl.classList.remove('selected');
+                    cellEl.classList.add('found');
+                }
+            });
+
+            const itemEl = document.getElementById(`word-item-${wordObj.clean}`);
+            if (itemEl) {
+                itemEl.classList.add('found');
+                itemEl.innerHTML = `✅ ${wordObj.original}`;
+            }
+        }
+
+        function updateScoreAndProgress() {
+            const total = originalWords.length;
+            const foundCount = foundWords.size;
+            document.getElementById('progressText').innerText = `${foundCount} / ${total}`;
+            document.getElementById('progressBar').style.width = `${(foundCount / total) * 100}%`;
+            document.getElementById('scoreText').innerText = `${score} pts`;
+        }
+
+        function triggerPositiveFeedback() {
+            const messages = [
+                "🎯 ¡Encontrada!",
+                "🔥 ¡Excelente ritmo!",
+                "🚀 ¡Sigue así, vas muy bien!",
+                "⭐ ¡Término técnico identificado!"
+            ];
+            const banner = document.getElementById('feedbackBanner');
+            banner.innerText = messages[Math.floor(Math.random() * messages.length)];
+            banner.style.background = "#f0fdf4";
+            banner.style.color = "#166534";
+        }
+
+        function triggerIncorrectFeedback() {
+            const banner = document.getElementById('feedbackBanner');
+            banner.innerText = "💡 ¡Sigue buscando! La respuesta está en la cuadrícula.";
+            banner.style.background = "#fef2f2";
+            banner.style.color = "#991b1b";
+            setTimeout(() => {
+                if (isGameActive) {
+                    banner.innerText = "🎯 ¡Busca la siguiente palabra en la lista!";
+                    banner.style.background = "#f0fdf4";
+                    banner.style.color = "#166534";
+                }
+            }, 2500);
+        }
+
+        function endGame() {
+            isGameActive = false;
+            stopTimer();
+
+            const totalTimeMinutes = timerSeconds / 60;
+            const totalTimeFormatted = document.getElementById('timerText').innerText.split(' / ')[0];
+            const totalWords = originalWords.length;
+            
+            let modalTitle = "";
+            let modalHtml = "";
+
+            if (totalTimeMinutes <= 20) {
+                modalTitle = "🟢 ¡Dominio excepcional! 🏆";
+                modalHtml = `
+                    <strong>¡Impresionante, ${studentName}! 🎉</strong><br>
+                    Has completado la actividad en un tiempo excelente, demostrando rapidez, concentración y dominio de los contenidos.<br><br>
+                    ⚡ <strong>Tu desempeño demuestra que puedes aplicar tus conocimientos con seguridad y agilidad.</strong><br><br>
+                    <strong>¡Excelente trabajo! Has alcanzado un nivel sobresaliente. 🚀🏆</strong>
+                `;
+            } else if (totalTimeMinutes <= 30) {
+                modalTitle = "🔵 ¡Excelente desempeño! 🌟";
+                modalHtml = `
+                    <strong>¡Muy buen trabajo, ${studentName}! 👏</strong><br>
+                    Has completado la actividad en un tiempo muy favorable, demostrando un buen manejo de los contenidos.<br><br>
+                    💡 Sigue practicando para ganar todavía más seguridad y fluidez al resolver las actividades.<br><br>
+                    <strong>¡Estás avanzando muy bien! Sigue superándote. 💪🚀</strong>
+                `;
+            } else if (totalTimeMinutes <= 40) {
+                modalTitle = "🟠 ¡Buen progreso! 🎯";
+                modalHtml = `
+                    <strong>¡Buen trabajo, ${studentName}! 👏</strong><br>
+                    Has completado la actividad y demostrado que estás construyendo tus conocimientos paso a paso.<br><br>
+                    📚 Tómate el tiempo necesario para revisar aquellos contenidos que presentaron mayor dificultad. Con práctica podrás resolver la actividad con mayor seguridad y rapidez.<br><br>
+                    <strong>¡Cada intento te ayuda a mejorar! Sigue adelante. 🚀</strong>
+                `;
+            } else {
+                modalTitle = "🔴 ¡Cada intento cuenta! 💪";
+                modalHtml = `
+                    <strong>¡No te desanimes, ${studentName}! 🌟</strong><br>
+                    Lo importante es que completaste la actividad y tuviste la oportunidad de poner en práctica tus conocimientos.<br><br>
+                    📖 Algunos contenidos pueden requerir un poco más de tiempo para comprenderlos y aplicarlos. Revisa nuevamente el material, identifica los aspectos que te resultaron más difíciles y vuelve a intentarlo.<br><br>
+                    <em>Recuerda: aprender no es una carrera contra el reloj. Cada intento es una oportunidad para mejorar. 🎯</em><br><br>
+                    <strong>¡Sigue practicando! Tu próximo intento puede ser aún mejor. 🚀</strong>
+                `;
+            }
+
+            document.getElementById('modalTitle').innerHTML = modalTitle;
+            document.getElementById('modalMessage').innerHTML = modalHtml;
+            document.getElementById('modalStats').innerHTML = `
+                Estudiante: ${studentName}<br>
+                Palabras encontradas: ${totalWords}/${totalWords} | Tiempo: ${totalTimeFormatted} | Puntuación: ${score} pts
+            `;
+
+            document.getElementById('completionModal').classList.remove('hidden');
+        }
+
+        function restartGame() {
+            document.getElementById('completionModal').classList.add('hidden');
+            document.getElementById('studentNameInput').value = "";
+            document.getElementById('nameModal').classList.remove('hidden');
+        }
+    </script>
+</body>
+</html>
